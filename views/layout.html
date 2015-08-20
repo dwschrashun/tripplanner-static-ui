@@ -149,17 +149,17 @@
     }];
 
   $(".btn-add").on("click", function () {
-    var listType = $("#hotel-drop option:selected").text();
+    var listType = $(this).siblings().find(":selected").text();
+    var ID = "."+($(this).siblings('h4').text()) + "-list";
+    console.log(ID);
     var itineraryItem = "<div class='itinerary-item'><span class='title'>" + listType + "</span><button class='btn btn-xs btn-danger remove btn-circle'>x</button></div>";
-    $(".hotel-list").append(itineraryItem);
-    // xmlhttp=new XMLHttpRequest();
-    // xmlhttp.open("GET", "https://maps.googleapis.com/maps/api/geocode/json?address=");
-    // var latLong = ;
-    // hotelLocation.push();
+    $(ID).append(itineraryItem);
   });
 
+
   $(".remove").on("click", function () {
-    
+    console.log("WE ARE HERE");
+    console.log($(this).text());
   });
 
 
