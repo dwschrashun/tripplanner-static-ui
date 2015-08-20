@@ -57,15 +57,9 @@
       });
 
       // draw some locations on the map
-      var hotelLocation = [40.705137, -74.007624];
-      var restaurantLocations = [
-        [40.705137, -74.013940],
-        [40.708475, -74.010846]
-      ];
-      var activityLocations = [
-        [40.716291, -73.995315],
-        [40.707119, -74.003602]
-      ];
+      var hotelLocation = [];
+      var restaurantLocations = [];
+      var activityLocations = [];
       function drawLocation (location, opts) {
         if (typeof opts !== 'object') {
           opts = {}
@@ -153,6 +147,23 @@
         saturation: -40
       }]
     }];
+
+  $(".btn-add").on("click", function () {
+    var listType = $("#hotel-drop option:selected").text();
+    var itineraryItem = "<div class='itinerary-item'><span class='title'>" + listType + "</span><button class='btn btn-xs btn-danger remove btn-circle'>x</button></div>";
+    $(".hotel-list").append(itineraryItem);
+    // xmlhttp=new XMLHttpRequest();
+    // xmlhttp.open("GET", "https://maps.googleapis.com/maps/api/geocode/json?address=");
+    // var latLong = ;
+    // hotelLocation.push();
+  });
+
+  $(".remove").on("click", function () {
+    
+  });
+
+
+
   </script>
   </body>
 </html>
