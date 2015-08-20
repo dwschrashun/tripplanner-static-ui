@@ -148,6 +148,13 @@
       }]
     }];
 
+    var days = [];
+    function Day () {
+      this.hotel = [];
+      this.restaurants = [];
+      this.activities = [];
+    }
+
   $(".btn-add").on("click", function () {
     var listType = $(this).siblings().find(":selected").text();
     var ID = "."+($(this).siblings('h4').text()) + "-list";
@@ -157,12 +164,30 @@
   });
 
 
-  $(".remove").on("click", function () {
+  $(".thing-list").delegate("button", "click", function () {
     console.log("WE ARE HERE");
-    console.log($(this).text());
+   $(this).closest(".itinerary-item").detach();
   });
 
+  $('.add_day').on("click", function () {
+    var nextNum = $(this).siblings().length + 1;
+    var lastButtonIndex = $(this).siblings().length -1;
+    var lastButton = $(this).siblings()[lastButtonIndex];
+    var newButton = '<button class="btn btn-circle day-btn new-btn">' + nextNum + '</button>';
+    if(!lastButton) {
+      $(newButton).insertAfter(this);
+    }
+    else {
+      $(newButton).insertAfter(lastButton);
+    }
+    days.push(new Day());
+  });
 
+  $(".day-buttons").delegate(".new-btn", "click", function () {
+    console.log("WE ARE HERE");
+    $(".day-buttons").removeClass();
+    $(this).addClass("active-day");
+  });
 
   </script>
   </body>
