@@ -36,7 +36,7 @@
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfQxgWt-LSZcEmTEN8581Uq9SzZHnpuys&sensor=true"></script>
     <script>
-      function initialize_gmaps() {
+      function initialize_gmaps(hotels, restaurants, activities) {
       // initialize new google maps LatLng object
       var myLatlng = new google.maps.LatLng(40.705189,-74.009209);
       // set the map options hash
@@ -55,14 +55,24 @@
         position: myLatlng,
         title:"Hello World!"
       });
+      console.log("activities:", activities);
 
       // draw some locations on the map
       var hotelLocation = [];
       var restaurantLocations = [];
       var activityLocations = [];
+      if (hotels) {
+        hotelLocation = hotels;
+      }
+      if (restaurants) {
+        restaurantLocations.push(restaurants);
+      }
+      if (activities) {
+        activityLocations.push(activities);
+      }
       function drawLocation (location, opts) {
         if (typeof opts !== 'object') {
-          opts = {}
+          opts = {};
         }
         opts.position = new google.maps.LatLng(location[0], location[1]);
         opts.map = map;
@@ -165,7 +175,19 @@
     //console.log(ID, itineraryItem);
     $(ID).append(itineraryItem);
     activeDay[listType].push(itineraryItem);
-    //console.log(activeDay);
+    var hotels;
+    var rest;
+    var placa;
+    if(listType === "Hotels") {
+      hotels = all_hotels[1].place[0].location;
+    }
+    else if (listType === "Restaurants") {
+     rest = all_restaurants[1].place[0].location;
+    }
+    else if (listType === "Activities") {
+      placa = all_activities[1].place[0].location;
+    }
+    initialize_gmaps(hotels, rest, placa);
   });
 
 
@@ -189,7 +211,6 @@
   });
 
   $(".day-buttons").delegate(".new-btn", "click", function () {
-    console.log("WE ARE HERE");
     $(".day-btn").removeClass("active-day");
     $(this).addClass("active-day");
     var activeDayId = $(this).attr("id").substr(8);
@@ -204,6 +225,24 @@
       $(".Activities-list").append(current);
     });
 
+  });
+
+  $(".removeDay").on("click",function(){
+    var currentDay = ($(".active-day").attr("id").substr(8))-1;
+    days.splice(currentDay);
+    var ButtonsDay = $(".day-buttons").children();
+    $(ButtonsDay).last().remove();
+   $(".day-buttons").children().last().addClass("active-day");
+     var activeDayId = $(".active-day").attr("id").substr(8);
+    activeDay = days[activeDayId - 1];
+    $(".thing-list").empty();
+    $(".Hotels-list").append(activeDay.Hotels[0]);
+    activeDay.Restaurants.forEach(function(current, index) {
+      $(".Restaurants-list").append(current);
+    });
+    activeDay.Activities.forEach(function(current, index) {
+      $(".Activities-list").append(current);
+    });
   });
 
   </script>
