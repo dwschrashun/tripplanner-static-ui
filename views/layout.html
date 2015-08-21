@@ -36,6 +36,8 @@
     <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfQxgWt-LSZcEmTEN8581Uq9SzZHnpuys&sensor=true"></script>
     <script>
+      var map; 
+
       function initialize_gmaps() {
       // initialize new google maps LatLng object
       var myLatlng = new google.maps.LatLng(40.705189,-74.009209);
@@ -49,13 +51,12 @@
       // get the maps div's HTML obj
       var map_canvas_obj = document.getElementById("map-canvas");
       // initialize a new Google Map with the options
-      var map = new google.maps.Map(map_canvas_obj, mapOptions);
+      map = new google.maps.Map(map_canvas_obj, mapOptions);
       // Add the marker to the map
       var marker = new google.maps.Marker({
         position: myLatlng,
         title:"Hello World!"
       });
-      console.log("activities:", activities);
 
       // draw some locations on the map
 
@@ -198,14 +199,15 @@
       this.Activities = [];
     }
 
-    function drawSomeMarkers (hotels, restaurants, activities, opts) {
+    function drawSomeMarkers (location, opts) {
+      console.log(location);
+      console.log(map);
         if (typeof opts !== 'object') {
           opts = {};
         }
         opts.position = new google.maps.LatLng(location[0], location[1]);
         opts.map = map;
         var marker = new google.maps.Marker(opts);
-
     } 
 
     function itineraryElement (node, location, name) {
@@ -229,16 +231,26 @@
     if(listType === "Hotels") {
       hotels = all_hotels[1].place[0].location;
       activeDay[listType].push(new itineraryElement(itineraryItem, hotels, selectedItem));
+      drawSomeMarkers(hotels, {icon: '/images/lodging_0star.png'});
     }
     else if (listType === "Restaurants") {
-     rest = all_restaurants[1].place[0].location;
+      for (var i = 0; i < all_restaurants.length; i++) {
+        if(all_restaurants[i].name === selectedItem) {
+          rest = all_restaurants[i].place.location;
+        }
+      }
      activeDay[listType].push(new itineraryElement(itineraryItem, rest, selectedItem));
+     drawSomeMarkers(rest, {icon: '/images/restaurant.png'});
     }
     else if (listType === "Activities") {
-      placa = all_activities[1].place[0].location;
+      for (var j = 0; j < all_restaurants.length; j++) {
+        if(all_activities[j].name === selectedItem) {
+          placa = all_activities[j].place.location;
+        }
+      }
       activeDay[listType].push(new itineraryElement(itineraryItem, placa, selectedItem));
+      drawSomeMarkers(placa, {icon: '/images/star-3.png'});
     }
-    drawSomeMarkers(hotels, rest, placa);
   });
 
 
@@ -264,18 +276,26 @@
   $(".day-buttons").delegate(".new-btn", "click", function () {
     $(".day-btn").removeClass("active-day");
     $(this).addClass("active-day");
+    initialize_gmaps();
     var activeDayId = $(this).attr("id").substr(8);
     activeDay = days[activeDayId - 1];
+    console.log(all_restaurants);
     $(".thing-list").empty();
     $(".Hotels-list").append(activeDay.Hotels[0].node);
+    console.log(activeDay.Hotels[0]);
+    if (activeDay.Hotels[0]){
+      drawSomeMarkers(activeDay.Hotels[0].location, {icon: '/images/lodging_0star.png'});
+    }
     activeDay.Restaurants.forEach(function(current, index) {
       console.log("restaurant: ", current);
       $(".Restaurants-list").append(current.node);
+      console.log(current.location);
+      drawSomeMarkers(current.location);
     });
     activeDay.Activities.forEach(function(current, index) {
       $(".Activities-list").append(current.node);
+      drawSomeMarkers(current.location);
     });
-
   });
 
   $(".removeDay").on("click",function(){
