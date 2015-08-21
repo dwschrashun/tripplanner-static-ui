@@ -149,18 +149,23 @@
     }];
 
     var days = [];
-    function Day () {
-      this.hotel = [];
-      this.restaurants = [];
-      this.activities = [];
+    function Itinerary () {
+      this.Hotels = [];
+      this.Restaurants = [];
+      this.Activities = [];
     }
 
+    var activeDay;
+
   $(".btn-add").on("click", function () {
-    var listType = $(this).siblings().find(":selected").text();
-    var ID = "."+($(this).siblings('h4').text()) + "-list";
-    console.log(ID);
-    var itineraryItem = "<div class='itinerary-item'><span class='title'>" + listType + "</span><button class='btn btn-xs btn-danger remove btn-circle'>x</button></div>";
+    var selectedItem = $(this).siblings().find(":selected").text();
+    var listType = ($(this).siblings('h4').text());
+    var ID = "." + listType + "-list";
+    var itineraryItem = "<div class='itinerary-item'><span class='title'>" + selectedItem + "</span><button class='btn btn-xs btn-danger remove btn-circle'>x</button></div>";
+    //console.log(ID, itineraryItem);
     $(ID).append(itineraryItem);
+    activeDay[listType].push(itineraryItem);
+    //console.log(activeDay);
   });
 
 
@@ -173,20 +178,32 @@
     var nextNum = $(this).siblings().length + 1;
     var lastButtonIndex = $(this).siblings().length -1;
     var lastButton = $(this).siblings()[lastButtonIndex];
-    var newButton = '<button class="btn btn-circle day-btn new-btn">' + nextNum + '</button>';
+    var newButton = '<button id="day-btn-' + nextNum + '" class="btn btn-circle day-btn new-btn">' + nextNum + '</button>';
     if(!lastButton) {
       $(newButton).insertAfter(this);
     }
     else {
       $(newButton).insertAfter(lastButton);
     }
-    days.push(new Day());
+    days.push(new Itinerary());
   });
 
   $(".day-buttons").delegate(".new-btn", "click", function () {
     console.log("WE ARE HERE");
-    $(".day-buttons").removeClass();
+    $(".day-btn").removeClass("active-day");
     $(this).addClass("active-day");
+    var activeDayId = $(this).attr("id").substr(8);
+    activeDay = days[activeDayId - 1];
+    $(".thing-list").empty();
+    $(".Hotels-list").append(activeDay.Hotels[0]);
+    activeDay.Restaurants.forEach(function(current, index) {
+      console.log("restaurant: ", current);
+      $(".Restaurants-list").append(current);
+    });
+    activeDay.Activities.forEach(function(current, index) {
+      $(".Activities-list").append(current);
+    });
+
   });
 
   </script>
